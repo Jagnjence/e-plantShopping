@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
+import { addItem } from "./CartSlice";
 import { autoBatchEnhancer } from '@reduxjs/toolkit';
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+    const [addedToCart, setAddedToCart] = useState({});
 
     const plantsArray = [
         {
@@ -238,6 +240,14 @@ function ProductList({ onHomeClick }) {
         textDecoration: 'none',
     }
 
+    const handleAddToCart = (product) => {
+        dispatch(addItem(product));
+        setAddedToCart((prevState) => ({
+        ...prevState,
+        [product.name]: true, // Set the product name as key and value as true to indicate it's added to cart
+        }));
+    };
+
     const handleHomeClick = (e) => {
         e.preventDefault();
         onHomeClick();
@@ -285,27 +295,35 @@ function ProductList({ onHomeClick }) {
                         {plantsArray.map((item, index) => (
                         
                         <tbody>
-                            <tr> <th colspan="4"><h3>{item.category}</h3></th> </tr>
+                            <br />
+                            <tr> <th colspan="5"><h3>{item.category}</h3></th> </tr>
+                            <br />
                             <tr>
-                                <th width="25%"><h4>Plant Name</h4></th>
+                                <th width="15%"><h4>Plant Name</h4></th>
                                 <th width="30%"><h4>Plant Image</h4></th>
-                                <th width="30%"><h4>Plant Description</h4></th>
+                                <th width="20%"><h4>Plant Description</h4></th>
                                 <th width="15%"><h4>Plant Cost</h4></th>
+                                <th width="30%"></th>
                             </tr>
+                            <br />
                             <tr>
-                                <td colspan="4">
+                                <td colspan="5">
                                     <table className="table_plant_data">       
-                                    {item.plants.map((item) => (
+                                    {item.plants.map((plant) => (
                                         <tbody>
                                             <tr>
-                                                <td width="25%">{item.name}</td>
+                                                <td width="15%" align="center">{plant.name}</td>
                                                 <td width="30%">
                                                     <div className="img">
-                                                        <img style={styleImg} src={item.image} alt={item.name} />
+                                                        <img style={styleImg} src={plant.image} alt={plant.name} />
                                                     </div>
                                                 </td>
-                                                <td width="30%">{item.description}</td>
-                                                <td width="15%">{item.cost}</td>
+                                                <td width="20%" align="center">{plant.description}</td>
+                                                <td width="15%" align="center">{plant.cost}</td>
+                                                <td  width="30%">
+                                                <button  className="product-button" onClick={() => handleAddToCart(plant)}>Add to Cart</button>
+                                                </td>
+                                                
                                                 
                                             </tr>
                                             
